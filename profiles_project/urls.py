@@ -14,8 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+# include: include urls from other apps in the root
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # filter the first prefix url then go the next urls.py
+    path('api/', include('profiles_api.urls')),
 ]
