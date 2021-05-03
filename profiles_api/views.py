@@ -1,12 +1,16 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
+
+from profiles_api import serializers
 
 # Create your views here.
 class HelloApiView(APIView):
     """Test API View"""
     # define app logic for our endpoint
     # that we are going to assign to this view
+    serializer_class = serializers.HelloSerializer
 
     def get(self, request, format=None):
         """Returns a list of APIView features"""
@@ -19,3 +23,33 @@ class HelloApiView(APIView):
         ]
 
         return Response({'message': 'Hello!', 'an_apiview': an_apiview})
+
+    def post(self, request):
+        """Create a hello message with our name"""
+        # serializer_class method is a method of parent class (in ApiView)
+        serializer = self.serializer_class(data=request.data)
+
+        # validate a serializer
+        if serializer.is_valid():
+            # retrieve the name field
+            name = serializer.validated_data.get('name')
+            message = f'Hello {name}'
+            return Response({'message': message})
+        else: 
+            return Response(
+                serializer.errors, 
+                status=status.HTTP_400_BAD_REQUEST,
+                )
+
+    def put(self, request, pk=None):
+        # pk is at the back of the url
+        """Handle updating an object"""
+        return Response({'method': 'PUT'})
+
+    def patch(self, request, pk=None):
+        """Handle a partial update of an object"""
+        return Response({'method': 'PATCH'})
+
+    def delete(self, request, pk=None):
+        """Delete an object"""
+        return Response({'method': 'DELETE'})
