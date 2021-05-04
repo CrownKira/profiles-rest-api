@@ -32,7 +32,7 @@ class UserProfileManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, name, password):
-        """Create and save a new suepruser with given detials"""
+        """Create and save a new superuser with given details"""
         # self is auto passed in
         user = self.create_user(email, name, password)
         # is_superuser is auto created by the PermissionsMixin

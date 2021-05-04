@@ -3,8 +3,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
 
 from profiles_api import serializers
+from profiles_api import models
+from profiles_api import permissions
 
 # Create your views here.
 class HelloApiView(APIView):
@@ -100,3 +103,16 @@ class HelloViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None):
         """Handle removing an object"""
         return Response({'http_method': 'DELETE'})
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """Handle creating and updating profiles"""
+    # need to point to model
+    # for model view set, assign these two, django will take care of 
+    # modifying operation for us 
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
+    # can config one or more types, just add to this classes
+    authentication_classes = (TokenAuthentication,)
+    # DRF does all these for us, we just need to assign
+    permission_classes = (permissions.UpdateOwnProfile,)
