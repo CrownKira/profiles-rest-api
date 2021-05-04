@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
+from django.conf import settings
 
 # Create your models here.
 # this means that this class extends BaseUserManager
@@ -15,7 +16,7 @@ class UserProfileManager(BaseUserManager):
         # password is optional field here, if none then none
         """Create a new user profile"""
         if not email:
-            raise ValueError('User must have an email address')
+            raise ValueError("User must have an email address")
 
         # make use of parent method, this.method
         email = self.normalize_email(email)
@@ -45,9 +46,11 @@ class UserProfileManager(BaseUserManager):
 
         return user
 
+
 # custom user model
 class UserProfile(AbstractBaseUser, PermissionsMixin):
     """Database model for users in the system"""
+
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     # determine if user is active
@@ -56,8 +59,8 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
     objects = UserProfileManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["name"]
 
     # instance method, need self
     def get_full_name(self):
@@ -71,3 +74,17 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         """Return string representation of our user"""
         return self.email
+
+
+class ProfileFeedItem(models.Model):
+    """Profile status update"""
+
+    # on delete, delete all the items!!
+    # user_profile is not editable
+    user_profile = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    status_text = models.CharField(max_length=255)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        """Return the model as a string"""
+        return self.status_text
