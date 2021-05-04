@@ -5,6 +5,8 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import filters # add filter to viewset
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
 
 from profiles_api import serializers
 from profiles_api import models
@@ -124,3 +126,13 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     # adding this assignment will add to the routers the 
     # url pattern matching that detects search param
     search_fields = ('name', 'email',)
+
+
+class UserLoginApiView(ObtainAuthToken):
+    """Handle creating user authentication tokens"""
+    # make it visible to the browsable api
+    # add to obtain auth token 
+    # enable in django admin
+    # render this in browsable api
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+

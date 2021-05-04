@@ -10,6 +10,8 @@ class UserProfileManager(BaseUserManager):
     """Manager for user profiles"""
 
     def create_user(self, email, name, password=None):
+        # print('name:', name)
+        # print('email:', email)
         # password is optional field here, if none then none
         """Create a new user profile"""
         if not email:

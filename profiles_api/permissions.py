@@ -13,4 +13,5 @@ class UpdateOwnProfile(permissions.BasePermission):
       return True
     
     # if put, etc, all modifying methods
+    # the header must have the authentication
     return obj.id == request.user.id
