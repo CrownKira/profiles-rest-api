@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
+from rest_framework import filters # add filter to viewset
 
 from profiles_api import serializers
 from profiles_api import models
@@ -17,7 +18,7 @@ class HelloApiView(APIView):
     serializer_class = serializers.HelloSerializer
 
     def get(self, request, format=None):
-        """Returns a list of APIView features"""
+        """Returns a list of APIView features""" 
         # to retrieve a list of objects, or a specific object
         an_apiview = [
             'Uses HTTP methods as function (get, post, patch, put, delete)',
@@ -116,3 +117,10 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     # DRF does all these for us, we just need to assign
     permission_classes = (permissions.UpdateOwnProfile,)
+    # filter these fields using this filter backend
+    # use search param to get the items (eg. ?search=Test)
+    filter_backends = (filters.SearchFilter,)
+    # allows to search for this viewset by name or email field
+    # adding this assignment will add to the routers the 
+    # url pattern matching that detects search param
+    search_fields = ('name', 'email',)
